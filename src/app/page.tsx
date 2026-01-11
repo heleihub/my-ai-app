@@ -1,94 +1,100 @@
 'use client';
-
 import { useState, useRef, useEffect } from 'react';
 
-export default function HomePage() {
+export default function GeminiStylePage() {
   const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
+  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentMode, setCurrentMode] = useState("极致杠精 💢");
-  const messagesEndRef = useRef(null);
+  const [mode, setMode] = useState("极致杠精 💢");
+  const chatEnd = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => { chatEnd.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  useEffect(scrollToBottom, [messages]);
-
-  const sendMessage = async () => {
-    if (!inputMessage.trim()) return;
-    const newMessage = { role: 'user', content: inputMessage };
-    setMessages((prev) => [...prev, newMessage]);
-    setInputMessage('');
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
     setLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: inputMessage, mode: currentMode }),
+        body: JSON.stringify({ message: input, mode })
       });
-      const data = await response.json();
-      setMessages((prev) => [...prev, { role: 'ai', content: data.reply }]);
+      const data = await res.json();
+      setMessages(prev => [...prev, { role: 'ai', content: data.reply || "API 未响应，请检查 Netlify 变量设置" }]);
     } catch (e) {
-      setMessages((prev) => [...prev, { role: 'ai', content: "网络被气断了..." }]);
+      setMessages(prev => [...prev, { role: 'ai', content: "连接失败，请稍后重试。" }]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'sans-serif', backgroundColor: '#f3f4f6' }}>
-      {/* 侧边栏 */}
-      <div style={{ width: '280px', backgroundColor: 'white', padding: '24px', borderRight: '1px solid #e5e7eb', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ color: '#2563eb', fontWeight: 'bold', fontSize: '24px', marginBottom: '24px' }}>小何 AI 情绪盒</h2>
-        <label style={{ fontSize: '14px', color: '#374151', marginBottom: '8px', display: 'block' }}>切换人格模式</label>
-        <select 
-          value={currentMode} 
-          onChange={(e) => setCurrentMode(e.target.value)}
-          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', marginBottom: '20px' }}
-        >
-          {["极致杠精 💢", "极致舔狗 ❤️", "阴阳怪气 🍵"].map(m => <option key={m} value={m}>{m}</option>)}
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f8fafd', color: '#1f1f1f', fontFamily: 'Segoe UI, Roboto, sans-serif' }}>
+      {/* 侧边栏：极简清爽 */}
+      <div style={{ width: '260px', backgroundColor: '#f0f4f9', padding: '20px', display: 'flex', flexDirection: 'column', borderRight: '1px solid #dee2e6' }}>
+        <div style={{ fontSize: '20px', fontWeight: '500', marginBottom: '30px', color: '#0b57d0' }}>Gemini Pro Max</div>
+        
+        <label style={{ fontSize: '12px', fontWeight: '600', color: '#444746', marginBottom: '8px' }}>人格设定</label>
+        <select value={mode} onChange={(e) => setMode(e.target.value)} style={{ padding: '10px', borderRadius: '12px', border: '1px solid #c4c7c5', backgroundColor: 'white', marginBottom: '20px', outline: 'none' }}>
+          {["极致杠精 💢", "极致舔狗 ❤️", "阴阳怪气 🍵"].map(m => <option key={m}>{m}</option>)}
         </select>
 
-        <div style={{ flex: 1, overflowY: 'auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#1f2937' }}>☕ 请作者喝杯咖啡</p>
-          <img src="https://youke3.picui.cn/s1/2026/01/12/6963e20a9d019.png" style={{ width: '100%', borderRadius: '12px', marginBottom: '12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
-          <img src="https://youke3.picui.cn/s1/2026/01/12/6963e23771e4a.png" style={{ width: '100%', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
-          <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '10px' }}>点击图片可长按保存</p>
+        <div style={{ flex: 1 }} />
+        
+        {/* 收款码：优化比例，不挡视线 */}
+        <div style={{ backgroundColor: 'white', padding: '15px', borderRadius: '16px', textAlign: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+          <div style={{ fontSize: '12px', marginBottom: '10px', color: '#444746' }}>支持作者</div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <img src="https://youke3.picui.cn/s1/2026/01/12/6963e20a9d019.png" style={{ width: '46%', borderRadius: '8px' }} alt="微信" />
+            <img src="https://youke3.picui.cn/s1/2026/01/12/6963e23771e4a.png" style={{ width: '46%', borderRadius: '8px' }} alt="支付宝" />
+          </div>
         </div>
       </div>
 
-      {/* 聊天主区 */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* 主聊天区 */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '40px 10%' }}>
+          {messages.length === 0 && (
+            <div style={{ marginTop: '15vh', fontSize: '32px', color: '#c4c7c5', fontWeight: '500' }}>
+              你好，我是小何 AI。<br/><span style={{ fontSize: '20px' }}>今天想听点什么？（当前模式：{mode}）</span>
+            </div>
+          )}
           {messages.map((msg, i) => (
-            <div key={i} style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start', maxWidth: '70%' }}>
-              <div style={{ 
-                padding: '12px 16px', borderRadius: '12px', 
-                backgroundColor: msg.role === 'user' ? '#2563eb' : 'white',
-                color: msg.role === 'user' ? 'white' : '#1f2937',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-              }}>
+            <div key={i} style={{ marginBottom: '30px', display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+              <div style={{ maxWidth: '80%', padding: '12px 20px', borderRadius: '18px', lineHeight: '1.6', backgroundColor: msg.role === 'user' ? '#e9eef6' : 'transparent', border: msg.role === 'user' ? 'none' : 'none' }}>
+                {msg.role === 'ai' && <div style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '5px', color: '#0b57d0' }}>AI Response</div>}
                 {msg.content}
               </div>
             </div>
           ))}
-          <div ref={messagesEndRef} />
+          {loading && <div style={{ color: '#c4c7c5', fontSize: '14px' }}>AI 正在思考...</div>}
+          <div ref={chatEnd} />
         </div>
 
-        <div style={{ padding: '20px', backgroundColor: 'white', borderTop: '1px solid #e5e7eb', display: 'flex' }}>
-          <input 
-            type="text" 
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-            placeholder="输入你的消息..."
-            style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #d1d5db', outline: 'none' }}
-          />
-          <button onClick={sendMessage} style={{ marginLeft: '12px', padding: '10px 24px', backgroundColor: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
-            发送
-          </button>
+        {/* 输入框区域：Gemini 风格胶囊设计 */}
+        <div style={{ padding: '20px 10%', backgroundColor: '#f8fafd' }}>
+          <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f0f4f9', borderRadius: '32px', padding: '8px 20px', border: '1px solid transparent', transition: '0.3s' }}>
+            {/* 附件图标 */}
+            <button style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '8px' }}>➕</button>
+            <input 
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="在这里输入提示词..."
+              style={{ flex: 1, background: 'none', border: 'none', padding: '12px', outline: 'none', fontSize: '16px' }}
+            />
+            {/* 语音图标 */}
+            <button style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', padding: '8px' }}>🎙️</button>
+            {/* 发送按钮 */}
+            <button onClick={handleSend} style={{ background: '#0b57d0', color: 'white', border: 'none', borderRadius: '50%', width: '40px', height: '40px', cursor: 'pointer', marginLeft: '10px' }}>➔</button>
+          </div>
+          <div style={{ textAlign: 'center', fontSize: '11px', color: '#707070', marginTop: '10px' }}>
+            Gemini 可能会产生错误信息，请核实重要回复。
+          </div>
         </div>
       </div>
     </div>
