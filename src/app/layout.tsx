@@ -1,6 +1,5 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import "./globals.css"; // 如果没有这个文件也没关系，系统会自动处理
 
 export const metadata: Metadata = {
   title: "小何 AI 情绪对话盲盒",
@@ -14,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body style={{ margin: 0, padding: 0 }}>{children}</body>
     </html>
   );
 }
