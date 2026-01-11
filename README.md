@@ -46,3 +46,39 @@
 1. 安装依赖：
    ```bash
    npm install
+设置本地密钥：在根目录创建 .env.local 文件，填入：
+
+代码段
+
+GOOGLE_API_KEY=你的密钥
+运行项目：
+
+Bash
+
+npm run dev
+📂 项目结构
+Plaintext
+
+ai-emotion-box/
+├── src/
+│   ├── app/
+│   │   ├── api/chat/route.ts  # 后端 API 代理路由 (隐藏 Key)
+│   │   └── page.tsx           # 前端聊天主界面
+│   └── components/
+│       └── Sidebar.tsx        # 模式切换组件 + 收款码模块
+├── .env.local                 # 本地环境变量配置
+├── package.json               # 项目依赖与脚本配置
+└── README.md                  # 本说明文件
+📜 免责声明
+本项目仅供技术交流与学习使用。请妥善保管你的 API Key，避免因泄露导致的额度损失。
+
+如果这个项目对你有帮助，欢迎点一个 ⭐ Star 支持作者小何！
+
+
+**操作小贴士：**
+1. 复制上方框内的内容。
+2. 在 GitHub 网页版进入你的仓库，点击 **Add file** -> **Create new file**。
+3. 文件名输入 `README.md`。
+4. 粘贴内容并点击底部的 **Commit changes**。
+
+您现在已经完成了所有的代码准备工作，如果您需要我帮您写一段吸引流量的**小红书推广文案**，随时告诉我！
