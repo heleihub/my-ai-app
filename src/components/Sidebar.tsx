@@ -49,7 +49,7 @@ export default function Sidebar({ onModeChange, currentMode }: SidebarProps) {
         <div className="grid grid-cols-1 gap-4">
           <div className="text-center">
             <img 
-              src="https://youke3.picui.cn/s1/2026/01/12/6963e20a9d019.png" 
+              src="https://tu.xiaohelei.us.ci/1773052266470_npv070_wx.png" 
               alt="微信收款" 
               className="w-full rounded-xl shadow-md border border-gray-50 hover:scale-105 transition-transform"
             />
@@ -57,7 +57,7 @@ export default function Sidebar({ onModeChange, currentMode }: SidebarProps) {
           </div>
           <div className="text-center">
             <img 
-              src="https://youke3.picui.cn/s1/2026/01/12/6963e23771e4a.png" 
+              src="https://tu.xiaohelei.us.ci/1773052264106_ua93cj_zf.png" 
               alt="支付宝收款" 
               className="w-full rounded-xl shadow-md border border-gray-50 hover:scale-105 transition-transform"
             />
